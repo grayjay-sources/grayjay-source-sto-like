@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>S.to-like Framework Generator - GrayJay Plugin</title>
-    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -267,11 +267,15 @@
             configUrl = `grayjay://plugin/${btoa(JSON.stringify(generatedConfig))}`;
 
             // Generate QR Code
-            document.getElementById('qrcode').innerHTML = '';
-            new QRCode(document.getElementById('qrcode'), {
-                text: configUrl,
-                width: 256,
-                height: 256
+            const qrcodeDiv = document.getElementById('qrcode');
+            qrcodeDiv.innerHTML = '';
+            QRCode.toCanvas(configUrl, { width: 256, errorCorrectionLevel: 'M' }, function (error, canvas) {
+                if (error) {
+                    console.error(error);
+                    qrcodeDiv.innerHTML = '<p style="color: red;">Error generating QR code</p>';
+                } else {
+                    qrcodeDiv.appendChild(canvas);
+                }
             });
 
             // Show result
