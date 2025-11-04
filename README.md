@@ -8,7 +8,7 @@ This plugin allows you to create custom GrayJay plugins for any German streaming
 
 ## How to use
 
-1. Visit the generator page: https://YOUR_USERNAME.github.io/grayjay-source-sto-like/
+1. Visit the generator page: https://grayjay-sources.github.io/grayjay-source-sto-like/
 2. Enter your streaming site's base URL (e.g., `https://your-site.to`)
 3. Click "Generate" to create your custom plugin
 4. Scan the QR code with GrayJay or download the config file
@@ -16,6 +16,7 @@ This plugin allows you to create custom GrayJay plugins for any German streaming
 ## Supported Sites
 
 Any site using the S.to/Aniworld framework with:
+
 - `/anime/stream/` or `/serie/stream/` URL structure
 - Similar HTML structure for episode listings
 - German language content
@@ -30,6 +31,7 @@ Any site using the S.to/Aniworld framework with:
 ## Development
 
 To run locally:
+
 ```bash
 cd docs
 python -m http.server 8000
@@ -40,4 +42,3 @@ Then visit http://localhost:8000
 ## License
 
 MIT License - See LICENSE file for details
-
