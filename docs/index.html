@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S.to-like Framework Generator - GrayJay Plugin</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            display: block;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        #result {
+            display: none;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        #qrcode {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f8f8;
+            border-radius: 12px;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .btn-tertiary {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .info-box {
+            background: #f0f7ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .example {
+            font-family: monospace;
+            background: #f8f8f8;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #667eea;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <img src="sto-like-icon.png" alt="S.to-like Logo" class="logo" id="logo">
+        <h1>S.to-like Framework Generator</h1>
+        <p class="subtitle">Create custom GrayJay plugins for German streaming sites</p>
+
+        <div class="info-box">
+            ℹ️ This generator creates plugins for German streaming sites using the S.to/Aniworld framework.
+            Enter your site's base URL and configuration below.
+        </div>
+
+        <div class="input-group">
+            <label for="baseUrl">Base URL <span style="color: red;">*</span></label>
+            <input type="url" id="baseUrl" placeholder="https://your-site.to" required>
+            <small style="color: #666;">Example: <span class="example">https://s.to</span> or <span class="example">https://aniworld.to</span></small>
+        </div>
+
+        <div class="input-group">
+            <label for="platformName">Platform Name <span style="color: red;">*</span></label>
+            <input type="text" id="platformName" placeholder="My Streaming Site" required>
+        </div>
+
+        <div class="input-group">
+            <label for="contentType">Content Type</label>
+            <select id="contentType">
+                <option value="serie">TV Series (serie)</option>
+                <option value="anime">Anime (anime)</option>
+            </select>
+        </div>
+
+        <button class="btn" onclick="generatePlugin()">Generate Plugin</button>
+
+        <div id="result">
+            <h2 style="text-align: center; margin-bottom: 20px; color: #333;">Your Plugin is Ready!</h2>
+            <div id="qrcode"></div>
+
+            <div class="action-buttons">
+                <button class="btn btn-secondary" onclick="copyLink()">📋 Copy Link</button>
+                <button class="btn btn-tertiary" onclick="downloadConfig()">💾 Download</button>
+            </div>
+            <button class="btn" onclick="openInGrayjay()" style="margin-top: 10px;">🚀 Open in GrayJay</button>
+        </div>
+    </div>
+
+    <script>
+        let generatedConfig = null;
+        let configUrl = null;
+
+        function generatePlugin() {
+            const baseUrl = document.getElementById('baseUrl').value.trim();
+            const platformName = document.getElementById('platformName').value.trim();
+            const contentType = document.getElementById('contentType').value;
+
+            if (!baseUrl || !platformName) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            // Validate URL
+            try {
+                new URL(baseUrl);
+            } catch (e) {
+                alert('Please enter a valid URL');
+                return;
+            }
+
+            // Generate UUID for plugin
+            const pluginId = generateUUID();
+
+            // Create config
+            generatedConfig = {
+                "name": platformName,
+                "description": `${platformName} integration for GrayJay`,
+                "author": "Community Generator",
+                "authorUrl": "https://github.com",
+                "platformUrl": baseUrl,
+                "sourceUrl": `${window.location.origin}${window.location.pathname}config/${pluginId}.json`,
+                "repositoryUrl": "https://github.com/grayjay-sources/grayjay-source-sto-like",
+                "scriptUrl": "./StoLikeScript.js",
+                "version": 1,
+                "iconUrl": "./sto-like-icon.png",
+                "id": pluginId,
+                "scriptSignature": "",
+                "scriptPublicKey": "",
+                "packages": ["Http", "DOMParser"],
+                "allowEval": false,
+                "allowUrls": [baseUrl.replace(/^https?:\/\//, '')],
+                "constants": {
+                    "baseUrl": baseUrl,
+                    "platformName": platformName,
+                    "contentType": contentType
+                },
+                "supportedClaimTypes": [3],
+                "authentication": {
+                    "loginUrl": `${baseUrl}/login`,
+                    "userAgent": "Mozilla/5.0 (Linux; Android 12) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.6099.230 Mobile Safari/537.36",
+                    "domainHeadersToFind": {}
+                },
+                "settings": [],
+                "changelog": {
+                    "1": ["Initial version generated from S.to-like framework"]
+                }
+            };
+
+            generatedConfig.authentication.domainHeadersToFind[baseUrl.replace(/^https?:\/\//, '')] = [];
+
+            // Convert to base64 for URL
+            configUrl = `grayjay://plugin/${btoa(JSON.stringify(generatedConfig))}`;
+
+            // Generate QR Code
+            document.getElementById('qrcode').innerHTML = '';
+            new QRCode(document.getElementById('qrcode'), {
+                text: configUrl,
+                width: 256,
+                height: 256
+            });
+
+            // Show result
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function generateUUID() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                const r = Math.random() * 16 | 0;
+                const v = c === 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+
+        function copyLink() {
+            if (!configUrl) return;
+            navigator.clipboard.writeText(configUrl).then(() => {
+                alert('Link copied to clipboard!');
+            });
+        }
+
+        function downloadConfig() {
+            if (!generatedConfig) return;
+            const blob = new Blob([JSON.stringify(generatedConfig, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${generatedConfig.name.replace(/\s+/g, '')}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function openInGrayjay() {
+            if (!configUrl) return;
+            window.location.href = configUrl;
+        }
+    </script>
+</body>
+
+</html>
